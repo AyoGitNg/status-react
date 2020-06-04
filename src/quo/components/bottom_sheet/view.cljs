@@ -38,6 +38,8 @@
         (bean/bean props)
 
         {window-height :height} (rn/use-window-dimensions)
+        {:keys [keyboard-shown keyboard-height]}
+        (rn/use-keyboard)
         safe-area               (safe-area/use-safe-area)
         max-height              (- window-height (:top safe-area) styles/margin-top)
         content-height          (react/state 0)
@@ -193,7 +195,9 @@
                                  :scroll-enabled (= sheet-height max-height)}
            [animated/view {:style     {:padding-top    styles/vertical-padding
                                        :padding-bottom (+ styles/vertical-padding
-                                                          (:bottom safe-area))}
+                                                          (if (and platform/ios? keyboard-shown)
+                                                            keyboard-height
+                                                            (:bottom safe-area)))}
                            :on-layout on-layout}
             (into [:<>] (react/get-children children))]]]]]]])))
 

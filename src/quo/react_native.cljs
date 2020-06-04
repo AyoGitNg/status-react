@@ -70,3 +70,8 @@
      :width      (.-window ^js window)}))
 
 (def use-back-handler (.-useBackHandler hooks))
+
+(defn use-keyboard []
+  (let [kb (.useKeyboard hooks)]
+    {:keyboard-shown  (.-keyboardShown ^js kb)
+     :keyboard-height (.-keyboardHeight ^js kb)}))

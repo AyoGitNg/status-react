@@ -143,12 +143,13 @@
         ^{:key public-key}
         [quo/list-item {:accessibility-label (keyword (str "select-account-button-" accessibility-n))
                         :active              selected?
-                        :title               [quo/text {:number-of-lines 2
-                                                        :weight          :medium
-                                                        :ellipsize-mode  :middle}
+                        :title               [quo/text {:number-of-lines     2
+                                                        :weight              :medium
+                                                        :ellipsize-mode      :middle
+                                                        :accessibility-label :username}
                                               (gfy/generate-gfy public-key)]
                         :subtitle            [quo/text {:weight :monospace
-                                                        :color  :inherit}
+                                                        :color  :secondary}
                                               (utils/get-shortened-address public-key)]
                         :accessory           :radio
                         :on-press            #(re-frame/dispatch [:intro-wizard/on-key-selected (:id acc)])

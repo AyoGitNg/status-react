@@ -68,17 +68,18 @@
 (defn render-asset [currency & [on-press]]
   (fn [{:keys [icon decimals amount color value] :as token}]
     [quo/list-item
-     (merge {:title    [quo/text {:weight :medium}
-                        [quo/text {:weight              :inherit
-                                   :accessibility-label (str (:symbol token)  "-asset-value")}
-                         (wallet.utils/format-amount amount decimals)]
-                        [quo/text {:color  :secondary
-                                   :weight :inherit}
-                         (str " " (wallet.utils/display-symbol token))]]
-             :subtitle (str (if value value "0.00") " " currency)
-             :icon     (if icon
-                         [list/item-image icon]
-                         [chat-icon/custom-icon-view-list (:name token) color])}
+     (merge {:title               [quo/text {:weight :medium}
+                                   [quo/text {:weight :inherit}
+                                    (str (wallet.utils/format-amount amount decimals)
+                                         " ")]
+                                   [quo/text {:color  :secondary
+                                              :weight :inherit}
+                                    (wallet.utils/display-symbol token)]]
+             :subtitle            (str (if value value "0.00") " " currency)
+             :accessibility-label (str (:symbol token)  "-asset-value")
+             :icon                (if icon
+                                    [list/item-image icon]
+                                    [chat-icon/custom-icon-view-list (:name token) color])}
             (when on-press
               {:on-press #(on-press token)}))]))
 

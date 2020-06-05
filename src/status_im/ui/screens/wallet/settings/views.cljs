@@ -23,7 +23,7 @@
      :handler             #(re-frame/dispatch [:wallet.settings.ui/navigate-back-pressed])}}])
 
 (defn hide-sheet-and-dispatch [event]
-  (re-frame/dispatch [:bottom-sheet/hide-sheet])
+  (re-frame/dispatch [:bottom-sheet/hide])
   (re-frame/dispatch event))
 
 (defn custom-token-actions-view [{:keys [custom?] :as token}]

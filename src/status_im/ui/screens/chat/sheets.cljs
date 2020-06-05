@@ -11,7 +11,7 @@
             [quo.core :as quo]))
 
 (defn hide-sheet-and-dispatch [event]
-  (re-frame/dispatch [:bottom-sheet/hide-sheet])
+  (re-frame/dispatch [:bottom-sheet/hide])
   (re-frame/dispatch event))
 
 (defn one-to-one-chat-accents [{:keys [chat-id]}]
@@ -62,7 +62,7 @@
          :accessibility-label :share-chat-button
          :icon                :main-icons/share
          :on-press            (fn []
-                                (re-frame/dispatch [:bottom-sheet/hide-sheet])
+                                (re-frame/dispatch [:bottom-sheet/hide])
                                 (list-selection/open-share {:message message}))}])
      [quo/list-item
       {:theme               :accent
@@ -175,7 +175,7 @@
          :title    (i18n/label :t/sharing-copy-to-clipboard)
          :icon     :main-icons/copy
          :on-press (fn []
-                     (re-frame/dispatch [:bottom-sheet/hide-sheet])
+                     (re-frame/dispatch [:bottom-sheet/hide])
                      (react/copy-to-clipboard (:text content)))}]
        (when-not platform/desktop?
          [quo/list-item
@@ -183,7 +183,7 @@
            :title    (i18n/label :t/sharing-share)
            :icon     :main-icons/share
            :on-press (fn []
-                       (re-frame/dispatch [:bottom-sheet/hide-sheet])
+                       (re-frame/dispatch [:bottom-sheet/hide])
                        (list-selection/open-share {:message (:text content)}))}])])))
 
 (defn sticker-long-press [{:keys [from]}]
@@ -232,7 +232,7 @@
            :title    :t/sharing-copy-to-clipboard
            :icon     :main-icons/copy
            :on-press (fn []
-                       (re-frame/dispatch [:bottom-sheet/hide-sheet])
+                       (re-frame/dispatch [:bottom-sheet/hide])
                        (react/copy-to-clipboard (:image content)))}]
        [quo/list-item
         {:theme    :accent
@@ -246,5 +246,5 @@
            :title    :t/sharing-share
            :icon     :main-icons/share
            :on-press (fn []
-                       (re-frame/dispatch [:bottom-sheet/hide-sheet])
+                       (re-frame/dispatch [:bottom-sheet/hide])
                        (list-selection/open-share {:message (:image content)}))}]])))

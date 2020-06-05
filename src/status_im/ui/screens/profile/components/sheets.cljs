@@ -7,7 +7,7 @@
   (:require-macros [status-im.utils.views :as views]))
 
 (defn hide-sheet-and-dispatch [event]
-  (re-frame/dispatch [:bottom-sheet/hide-sheet])
+  (re-frame/dispatch [:bottom-sheet/hide])
   (re-frame/dispatch event))
 
 (views/defview block-contact []

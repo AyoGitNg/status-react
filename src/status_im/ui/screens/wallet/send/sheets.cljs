@@ -49,7 +49,7 @@
          50)}])))
 
 (defn show-accounts-list []
-  (re-frame/dispatch [:bottom-sheet/hide-sheet])
+  (re-frame/dispatch [:bottom-sheet/hide])
   (js/setTimeout #(re-frame/dispatch [:bottom-sheet/show-sheet
                                       {:content        (fn [] [accounts-list :to :wallet.send/set-field])
                                        :content-height 300}]) 400))

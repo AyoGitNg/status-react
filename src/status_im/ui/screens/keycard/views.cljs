@@ -373,8 +373,9 @@
     {:theme    :accent
      :title    (i18n/label :t/create-new-key)
      :icon     :main-icons/profile
-     :on-press #(re-frame/dispatch [:multiaccounts.create.ui/get-new-key])}]])
+     :on-press #(do
+                  (re-frame/dispatch [:bottom-sheet/hide])
+                  (re-frame/dispatch [:multiaccounts.create.ui/get-new-key]))}]])
 
 (def more-sheet
-  {:content        more-sheet-content
-   :content-height 65})
+  {:content more-sheet-content})

@@ -599,7 +599,7 @@
      [react/view {:style {:flex 1}}
       (for [name names]
         (let [action #(do (re-frame/dispatch [::ens/save-preferred-name name])
-                          (re-frame/dispatch [:bottom-sheet/hide-sheet]))]
+                          (re-frame/dispatch [:bottom-sheet/hide]))]
           ^{:key name}
           [react/touchable-highlight {:on-press action}
            [react/view {:style {:flex 1 :flex-direction :row :align-items :center :justify-content :center :margin-right 16}}

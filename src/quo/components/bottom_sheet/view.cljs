@@ -101,7 +101,8 @@
                                     .-height
                                     (+ styles/border-radius)
                                     (reset! content-height))
-                               (js/requestAnimationFrame open-sheet))]
+                               (when visible?
+                                 (js/requestAnimationFrame open-sheet)))]
     (animated/code!
      (fn []
        (animated/block

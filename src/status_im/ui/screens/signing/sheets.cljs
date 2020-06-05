@@ -45,7 +45,7 @@
      [react/view {:margin-horizontal 16 :align-items :center :justify-content :space-between :flex-direction :row :margin-top 6}
       [quo/button
        {:type     :secondary
-        :on-press #(re-frame/dispatch [:bottom-sheet/hide-sheet])}
+        :on-press #(re-frame/dispatch [:bottom-sheet/hide])}
        (i18n/label :t/cancel)]
       [quo/button
        {:type      :secondary

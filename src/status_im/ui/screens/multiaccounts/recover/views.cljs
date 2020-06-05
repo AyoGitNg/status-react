@@ -13,6 +13,10 @@
             [status-im.react-native.resources :as resources]
             [status-im.ui.components.icons.vector-icons :as icons]))
 
+(defn hide-sheet-and-dispatch [event]
+  (re-frame/dispatch [:bottom-sheet/hide])
+  (re-frame/dispatch event))
+
 (defview custom-seed-phrase []
   [react/view
    [react/view {:margin-top 24 :margin-horizontal 24 :align-items :center}
@@ -47,7 +51,7 @@
       :title               (i18n/label :t/enter-seed-phrase)
       :accessibility-label :enter-seed-phrase-button
       :icon                :main-icons/text
-      :on-press            #(re-frame/dispatch [::multiaccounts.recover/enter-phrase-pressed])}]
+      :on-press            #(hide-sheet-and-dispatch [::multiaccounts.recover/enter-phrase-pressed])}]
     (when (and config/hardwallet-enabled?
                (or platform/android?
                    config/keycard-test-menu-enabled?)
@@ -67,11 +71,7 @@
                                           :height           40}
                               [react/image {:source (resources/get-image :keycard-logo-blue)
                                             :style  {:width 24 :height 24}}]]
-        :on-press            #(re-frame/dispatch [::hardwallet/recover-with-keycard-pressed])}])]])
+        :on-press            #(hide-sheet-and-dispatch [::hardwallet/recover-with-keycard-pressed])}])]])
 
 (defn bottom-sheet []
-  {:content        bottom-sheet-view
-   :content-height (if (and platform/android?
-                            (nfc/nfc-supported?))
-                     130
-                     65)})
+  {:content bottom-sheet-view})

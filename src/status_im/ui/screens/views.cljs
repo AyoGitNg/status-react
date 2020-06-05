@@ -46,9 +46,6 @@
             (= view :add-new)
             (merge home.sheet/add-new)
 
-            (= view :edit-group-chat-name)
-            (merge home.sheet/add-new)
-
             (= view :keycard.login/more)
             (merge keycard/more-sheet)
 

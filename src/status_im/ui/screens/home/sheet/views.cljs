@@ -7,7 +7,7 @@
             [status-im.utils.config :as config]))
 
 (defn hide-sheet-and-dispatch [event]
-  (re-frame/dispatch [:bottom-sheet/hide-sheet])
+  (re-frame/dispatch [:bottom-sheet/hide])
   (re-frame/dispatch event))
 
 (defn add-new-view []
@@ -37,7 +37,7 @@
      :accessibility-label :chats-menu-invite-friends-button
      :icon                :main-icons/share
      :on-press            #(do
-                             (re-frame/dispatch [:bottom-sheet/hide-sheet])
+                             (re-frame/dispatch [:bottom-sheet/hide])
                              (list-selection/open-share {:message (i18n/label :t/get-status-at)}))}]])
 
 (def add-new

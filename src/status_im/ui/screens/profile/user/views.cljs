@@ -8,7 +8,6 @@
             [status-im.ui.components.common.common :as components.common]
             [status-im.ui.components.copyable-text :as copyable-text]
             [status-im.ui.components.list-selection :as list-selection]
-            [status-im.ui.components.list.views :as list.views]
             [status-im.ui.components.qr-code-viewer.views :as qr-code-viewer]
             [status-im.ui.components.react :as react]
             [status-im.ui.screens.profile.user.styles :as styles]
@@ -65,121 +64,115 @@
                                   [:tribute-to-talk.ui/menu-item-pressed])}
           opts)])
 
-(defn- flat-list-content
-  [preferred-name registrar tribute-to-talk
-   active-contacts-count mnemonic
-   keycard-account? notifications-enabled?]
-  [(cond-> {:title                (or (when registrar preferred-name)
-                                      (i18n/label :t/ens-usernames))
-            :subtitle             (if registrar
-                                    (if preferred-name
-                                      (i18n/label :t/ens-your-your-name)
-                                      (i18n/label :t/ens-usernames-details))
-                                    (i18n/label :t/ens-network-restriction))
-            :subtitle-max-lines   (if registrar
-                                    (if preferred-name 1 2)
-                                    1)
-            :accessibility-label  :ens-button
-            :container-margin-top 8
-            :disabled             (not registrar)
-            :chevron              true
-            :icon                 :main-icons/username}
-     registrar
-     (assoc :on-press #(re-frame/dispatch [:navigate-to :ens-main registrar])))
-   ;; TODO replace this with list-item config map
-   ;; left it as it is because not sure how to enable it for testing
-   (when tribute-to-talk [tribute-to-talk-item tribute-to-talk])
-   {:title               (i18n/label :t/contacts)
-    :icon                :main-icons/in-contacts
-    :accessibility-label :contacts-button
-    :accessory           :text
-    :accessory-text      (if (pos? active-contacts-count)
-                           (str active-contacts-count)
-                           (i18n/label :t/none))
-    :chevron             true
-    :on-press            #(re-frame/dispatch [:navigate-to :contacts-list])}
-   {:type                 :section-header
-    :accessibility-label  :settings-section
-    :title                (i18n/label :t/settings)}
-   {:icon                :main-icons/security
-    :title               (i18n/label :t/privacy-and-security)
-    :accessibility-label :privacy-and-security-settings-button
-    :chevron             true
-    :accessory           (when mnemonic
-                           [components.common/counter {:size 22} 1])
-    :on-press            #(re-frame/dispatch [:navigate-to :privacy-and-security])}
-   {:icon                :main-icons/appearance
-    :title               (i18n/label :t/appearance)
-    :accessibility-label :appearance-settings-button
-    :chevron             true
-    :on-press            #(re-frame/dispatch [:navigate-to :appearance])}
-   (when (and platform/android?
-              config/local-notifications?)
-     {:icon                :main-icons/notification
-      :title               (i18n/label :t/notifications)
-      :accessibility-label :notifications-button
-      :active              notifications-enabled?
-      :on-press            #(re-frame/dispatch
-                             [:multiaccounts.ui/notifications-switched (not notifications-enabled?)])
-      :accessory           :switch})
-   {:icon                :main-icons/mobile
-    :title               (i18n/label :t/sync-settings)
-    :accessibility-label :sync-settings-button
-    :chevron             true
-    :on-press            #(re-frame/dispatch [:navigate-to :sync-settings])}
-   (when (and (or platform/android?
-                  config/keycard-test-menu-enabled?)
-              config/hardwallet-enabled?
-              keycard-account?)
-     {:icon                :main-icons/keycard
-      :title               (i18n/label :t/keycard)
-      :accessibility-label :keycard-button
-      :chevron             true
-      :on-press            #(re-frame/dispatch [:navigate-to :keycard-settings])})
-   {:icon                :main-icons/settings-advanced
-    :title               (i18n/label :t/advanced)
-    :accessibility-label :advanced-button
-    :chevron             true
-    :on-press            #(re-frame/dispatch [:navigate-to :advanced-settings])}
-   {:icon                :main-icons/help
-    :title               (i18n/label :t/need-help)
-    :accessibility-label :help-button
-    :chevron             true
-    :on-press            #(re-frame/dispatch [:navigate-to :help-center])}
-   {:icon                :main-icons/info
-    :title               (i18n/label :t/about-app)
-    :accessibility-label :about-button
-    :chevron             true
-    :on-press            #(re-frame/dispatch [:navigate-to :about-app])}
-   {:icon                    :main-icons/log-out
-    :title                   (i18n/label :t/sign-out)
-    :accessibility-label     :log-out-button
-    :container-margin-top    24
-    :container-margin-bottom 24
-    :theme                   :negative
-    :on-press
-    #(re-frame/dispatch [:multiaccounts.logout.ui/logout-pressed])}])
-
-(defn render-item [props]
-  (if (= (:type props) :section-header)
-    [react/view {:margin-top 16}
-     [quo/list-header (:title props)]]
-    [quo/list-item props]))
-
 (defn content []
   (let [{:keys [preferred-name
                 mnemonic
                 keycard-pairing
                 notifications-enabled?]}
         @(re-frame/subscribe [:multiaccount])
-
         active-contacts-count @(re-frame/subscribe [:contacts/active-count])
         tribute-to-talk       @(re-frame/subscribe [:tribute-to-talk/profile])
         registrar             @(re-frame/subscribe [:ens.stateofus/registrar])]
-    (flat-list-content
-     preferred-name registrar tribute-to-talk
-     active-contacts-count mnemonic
-     keycard-pairing notifications-enabled?)))
+    [:<>
+     [quo/list-item
+      (cond-> {:title                (or (when registrar preferred-name)
+                                         (i18n/label :t/ens-usernames))
+               :subtitle             (if registrar
+                                       (if preferred-name
+                                         (i18n/label :t/ens-your-your-name)
+                                         (i18n/label :t/ens-usernames-details))
+                                       (i18n/label :t/ens-network-restriction))
+               :subtitle-max-lines   (if registrar
+                                       (if preferred-name 1 2)
+                                       1)
+               :accessibility-label  :ens-button
+               :container-margin-top 8
+               :disabled             (not registrar)
+               :chevron              true
+               :icon                 :main-icons/username}
+        registrar
+        (assoc :on-press #(re-frame/dispatch [:navigate-to :ens-main registrar])))]
+   ;; TODO replace this with list-item config map
+   ;; left it as it is because not sure how to enable it for testing
+     (when tribute-to-talk [tribute-to-talk-item tribute-to-talk])
+     [quo/list-item
+      {:title               (i18n/label :t/contacts)
+       :icon                :main-icons/in-contacts
+       :accessibility-label :contacts-button
+       :accessory           :text
+       :accessory-text      (if (pos? active-contacts-count)
+                              (str active-contacts-count)
+                              (i18n/label :t/none))
+       :chevron             true
+       :on-press            #(re-frame/dispatch [:navigate-to :contacts-list])}]
+     [react/view {:padding-top 16}
+      [quo/list-header (i18n/label :t/settings)]]
+     [quo/list-item
+      {:icon                :main-icons/security
+       :title               (i18n/label :t/privacy-and-security)
+       :accessibility-label :privacy-and-security-settings-button
+       :chevron             true
+       :accessory           (when mnemonic
+                              [components.common/counter {:size 22} 1])
+       :on-press            #(re-frame/dispatch [:navigate-to :privacy-and-security])}]
+     [quo/list-item
+      {:icon                :main-icons/appearance
+       :title               (i18n/label :t/appearance)
+       :accessibility-label :appearance-settings-button
+       :chevron             true
+       :on-press            #(re-frame/dispatch [:navigate-to :appearance])}]
+     (when (and platform/android?
+                config/local-notifications?)
+       [quo/list-item
+        {:icon                :main-icons/notification
+         :title               (i18n/label :t/notifications)
+         :accessibility-label :notifications-button
+         :active              notifications-enabled?
+         :on-press            #(re-frame/dispatch
+                                [:multiaccounts.ui/notifications-switched (not notifications-enabled?)])
+         :accessory           :switch}])
+     [quo/list-item
+      {:icon                :main-icons/mobile
+       :title               (i18n/label :t/sync-settings)
+       :accessibility-label :sync-settings-button
+       :chevron             true
+       :on-press            #(re-frame/dispatch [:navigate-to :sync-settings])}]
+     (when (and (or platform/android?
+                    config/keycard-test-menu-enabled?)
+                config/hardwallet-enabled?
+                keycard-pairing)
+       [quo/list-item
+        {:icon                :main-icons/keycard
+         :title               (i18n/label :t/keycard)
+         :accessibility-label :keycard-button
+         :chevron             true
+         :on-press            #(re-frame/dispatch [:navigate-to :keycard-settings])}])
+     [quo/list-item
+      {:icon                :main-icons/settings-advanced
+       :title               (i18n/label :t/advanced)
+       :accessibility-label :advanced-button
+       :chevron             true
+       :on-press            #(re-frame/dispatch [:navigate-to :advanced-settings])}]
+     [quo/list-item
+      {:icon                :main-icons/help
+       :title               (i18n/label :t/need-help)
+       :accessibility-label :help-button
+       :chevron             true
+       :on-press            #(re-frame/dispatch [:navigate-to :help-center])}]
+     [quo/list-item
+      {:icon                :main-icons/info
+       :title               (i18n/label :t/about-app)
+       :accessibility-label :about-button
+       :chevron             true
+       :on-press            #(re-frame/dispatch [:navigate-to :about-app])}]
+     [react/view {:padding-vertical 24}
+      [quo/list-item
+       {:icon                :main-icons/log-out
+        :title               (i18n/label :t/sign-out)
+        :accessibility-label :log-out-button
+        :theme               :negative
+        :on-press
+        #(re-frame/dispatch [:multiaccounts.logout.ui/logout-pressed])}]]]))
 
 (defn my-profile []
   (fn []
@@ -201,9 +194,4 @@
                               :subtitle (if (and ens-verified public-key)
                                           (gfy/generate-gfy public-key)
                                           public-key)})}
-        [list.views/flat-list
-         {:data                         (filter (comp not nil?) (content))
-          :initial-num-to-render        3
-          :render-fn                    render-item
-          :key-fn                       (fn [_ idx] (str idx))
-          :keyboard-should-persist-taps :handled}]]])))
+        [content]]])))
